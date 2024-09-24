@@ -7,8 +7,10 @@ export default function DataSubmissionForm() {
             title: '',
             description: '',
             imagePath: '',
+            height: 0.0,
+            imagePosition: { x: 0.0, y: 0.0 },
             levels: [
-                { levelNumber: '', icon: '', positionX: '', positionY: '' },
+                { levelNumber: '', icon: '', position: { x: '', y: '' } },
             ],
         },
     ]);
@@ -18,27 +20,37 @@ export default function DataSubmissionForm() {
             title: '',
             description: '',
             imagePath: '',
+            height: 0.0,
+            imagePosition: { x: 0.0, y: 0.0 },
             levels: [
-                { levelNumber: '', icon: '', positionX: '', positionY: '' },
+                { levelNumber: '', icon: '', position: { x: '', y: '' } },
             ],
         }]);
     };
 
     const handleSectionChange = (index, field, value) => {
         const newSections = [...sections];
-        newSections[index][field] = value;
+        if (field === 'imagePositionX' || field === 'imagePositionY') {
+            newSections[index].imagePosition[field === 'imagePositionX' ? 'x' : 'y'] = parseFloat(value);
+        } else {
+            newSections[index][field] = value;
+        }
         setSections(newSections);
     };
 
     const handleLevelChange = (sectionIndex, levelIndex, field, value) => {
         const newSections = [...sections];
-        newSections[sectionIndex].levels[levelIndex][field] = value;
+        if (field === 'positionX' || field === 'positionY') {
+            newSections[sectionIndex].levels[levelIndex].position[field === 'positionX' ? 'x' : 'y'] = parseFloat(value);
+        } else {
+            newSections[sectionIndex].levels[levelIndex][field] = value;
+        }
         setSections(newSections);
     };
 
     const addLevel = (sectionIndex) => {
         const newSections = [...sections];
-        newSections[sectionIndex].levels.push({ levelNumber: '', icon: '', positionX: '', positionY: '' });
+        newSections[sectionIndex].levels.push({ levelNumber: '', icon: '', position: { x: '', y: '' } });
         setSections(newSections);
     };
 
@@ -89,6 +101,34 @@ export default function DataSubmissionForm() {
                         />
                         <br /><br />
 
+                        <label>Height:</label>
+                        <input
+                            type="number"
+                            value={section.height}
+                            onChange={(e) => handleSectionChange(sectionIndex, 'height', parseFloat(e.target.value))}
+                            required
+                        />
+                        <br /><br />
+
+                        <h4>Image Position</h4>
+                        <label>X:</label>
+                        <input
+                            type="number"
+                            value={section.imagePosition.x}
+                            onChange={(e) => handleSectionChange(sectionIndex, 'imagePositionX', e.target.value)}
+                            required
+                        />
+                        <br /><br />
+
+                        <label>Y:</label>
+                        <input
+                            type="number"
+                            value={section.imagePosition.y}
+                            onChange={(e) => handleSectionChange(sectionIndex, 'imagePositionY', e.target.value)}
+                            required
+                        />
+                        <br /><br />
+
                         <h4>Levels</h4>
                         {section.levels.map((level, levelIndex) => (
                             <div key={levelIndex} className="level">
@@ -96,7 +136,7 @@ export default function DataSubmissionForm() {
                                 <input
                                     type="number"
                                     value={level.levelNumber}
-                                    onChange={(e) => handleLevelChange(sectionIndex, levelIndex, 'levelNumber', e.target.value)}
+                                    onChange={(e) => handleLevelChange(sectionIndex, levelIndex, 'levelNumber', parseInt(e.target.value))}
                                     required
                                 />
                                 <br /><br />
@@ -113,7 +153,7 @@ export default function DataSubmissionForm() {
                                 <label>Position X:</label>
                                 <input
                                     type="number"
-                                    value={level.positionX}
+                                    value={level.position.x}
                                     onChange={(e) => handleLevelChange(sectionIndex, levelIndex, 'positionX', e.target.value)}
                                     required
                                 />
@@ -122,7 +162,7 @@ export default function DataSubmissionForm() {
                                 <label>Position Y:</label>
                                 <input
                                     type="number"
-                                    value={level.positionY}
+                                    value={level.position.y}
                                     onChange={(e) => handleLevelChange(sectionIndex, levelIndex, 'positionY', e.target.value)}
                                     required
                                 />
