@@ -7,11 +7,11 @@ async function connectToDatabase() {
         useUnifiedTopology: true,
     });
 
-    if (!client.isConnected()) {
+    if (!client.isConnected) {
         await client.connect();
     }
-
-    return client.db('duolingo'); // Replace 'duolingo' with your database name
+    
+    return client.db('duolingo');  // Replace 'duolingo' with your database name
 }
 
 // API route handler
@@ -22,24 +22,22 @@ export default async function handler(req, res) {
 
     const data = req.body;
 
-    // Check if data is present
     if (!data) {
         return res.status(400).json({ message: 'No data received' });
     }
 
     try {
         const db = await connectToDatabase();
-        const collection = db.collection('Duolingo'); // Replace 'Duolingo' with your collection name
+        const collection = db.collection('Duolingo');  // Replace 'Duolingo' with your collection name
 
-        // Check if data is an array or an object
         if (Array.isArray(data)) {
             // Insert multiple records
-            const result = await collection.insertMany(data);
-            return res.status(201).json({ message: `${result.insertedCount} records inserted successfully!` });
+            await collection.insertMany(data);
+            return res.status(201).json({ message: 'Multiple records inserted successfully!' });
         } else if (typeof data === 'object') {
             // Insert a single record
-            const result = await collection.insertOne(data);
-            return res.status(201).json({ message: 'Data inserted successfully!', insertedId: result.insertedId });
+            await collection.insertOne(data);
+            return res.status(201).json({ message: 'Data inserted successfully!' });
         } else {
             return res.status(400).json({ message: 'Invalid data format' });
         }
